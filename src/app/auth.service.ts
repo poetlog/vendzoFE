@@ -49,15 +49,15 @@ export class AuthService {
       tap((response: any) => {
         if (response && response.token) {
           localStorage.setItem('authToken', response.token);
-          localStorage.setItem('username', username);
+          localStorage.setItem('userId', response.userId);
           this.router.navigate(['/profile']);
         }
       })
     );
   }
 
-  getUsername(): string | null {
-    return localStorage.getItem('username');
+  getUserId(): string | null {
+    return localStorage.getItem('userId');
   }
 
   getToken(): string | null {
@@ -70,7 +70,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('username');
+    localStorage.removeItem('userId');
     this.router.navigate(['/signin']);
   }
 

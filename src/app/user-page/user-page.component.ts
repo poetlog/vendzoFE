@@ -11,12 +11,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './user-page.component.css'
 })
 export class UserPageComponent implements OnInit {
-  username: string | null = '';
   user: any;
   constructor(private authService: AuthService, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.username = this.authService.getUsername();
     this.userService.getProfile().subscribe(data => {
       this.user = data;
     });

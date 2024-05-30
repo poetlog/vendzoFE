@@ -1,9 +1,9 @@
 <div>
   Kayıt ol yada 
   <button (click)="navigateToSignin()">Giriş Yap</button>
-    <br>
-    <br>
   </div>
+  ________________________________________________ <br>
+
 <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
     <label for="email">Email: </label>
     <input id="email" formControlName="email" type="email" required>

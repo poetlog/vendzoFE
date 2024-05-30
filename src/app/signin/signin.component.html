@@ -1,5 +1,6 @@
   
-  <div>Giriş Yap yada <button (click)="navigateToSignup()">Kayıt Ol</button> </div> <br>
+  <div>Giriş Yap yada <button (click)="navigateToSignup()">Kayıt Ol</button> </div>
+  ________________________________________________ <br>
 <form [formGroup]="signinForm" (ngSubmit)="onSignin()">
     <label for="username">Kullanıcı Adı: </label>
     <input id="username" formControlName="username" type="username" required>

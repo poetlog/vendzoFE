@@ -11,6 +11,6 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   getProfile(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/User/find/username=${localStorage.getItem('username')}`);
+    return this.http.get<any>(`${this.baseUrl}/User/find/id=${localStorage.getItem('userId')}`);
   }
 }

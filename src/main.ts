@@ -4,6 +4,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AppComponent } from './app/app.component';
 import { routes, appRoutingProviders } from './app/app.routes';
 import { authInterceptor } from './app/auth.interceptor';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 /*
 if (environment.production) {
@@ -15,6 +16,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(),
     appRoutingProviders,
-    provideHttpClient(withInterceptors([authInterceptor]))
+    provideHttpClient(withInterceptors([authInterceptor])), provideAnimationsAsync()
   ]
 });
