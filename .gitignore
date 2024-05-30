@@ -11,6 +11,10 @@
 npm-debug.log
 yarn-error.log
 
+# ngrok
+ngrok.exe
+tunnel.exe
+
 # IDEs and editors
 .idea/
 .project

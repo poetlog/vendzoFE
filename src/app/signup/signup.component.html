@@ -1,0 +1,18 @@
+<form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+    <label for="email">Sign up - Email:</label>
+    <input id="email" formControlName="email" type="email" required>
+    
+    <label for="username">Username:</label>
+    <input id="username" formControlName="username" type="text" required>
+
+    <label for="password">Password:</label>
+    <input id="password" formControlName="password" type="password" required>
+    
+    <label for="satici">Satıcı:</label>
+    <input id="satici" type="checkbox" formControlName="satici">
+
+    <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+  </form>
+  <button (click)="navigateToSignin()">Sign IN</button>
+
+  

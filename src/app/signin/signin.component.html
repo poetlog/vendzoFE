@@ -1,0 +1,12 @@
+<form [formGroup]="signinForm" (ngSubmit)="onSignin()">
+    <label for="username">Sign in - Username:</label>
+    <input id="username" formControlName="username" type="username" required>
+    
+    <label for="password">Password:</label>
+    <input id="password" formControlName="password" type="password" required>
+    
+    <button type="submit" [disabled]="signinForm.invalid">Sign In</button>
+    <div *ngIf="isLoading">Loading...</div>
+  </form>
+  <button (click)="navigateToSignup()">Sign Up</button>
+  
