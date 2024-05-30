@@ -39,6 +39,7 @@ export class SigninComponent {
         }, error => {
           this.isLoading = false;
           console.error('Signin failed', error);
+          alert("Giriş Başarısız!\nLütfen bilgilerinizi kontrol edin.")
         });
     }
   }

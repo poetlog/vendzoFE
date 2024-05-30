@@ -19,15 +19,24 @@ export class AuthService {
     return this.http.post(url, body, { observe: 'response' }).pipe(
       tap((response: HttpResponse<any>) => {
         if (response.status === 200) {
-          alert('Registration complete. Please sign in.');
+          alert('Kayıt Tamamlandı.\nGiriş Yapabilirsiniz.');
 
           this.router.navigate(['/signin']);
         }
       }),
       catchError((error: HttpErrorResponse) => {
-        alert('Registration failed');
         return new Observable((observer: Observer<any>) => {
           observer.error(error);
+          console.log(error.error);
+          let errorMessage = 'Kayıt Başarısız\n';
+          if (error.error && error.error.length) {
+            errorMessage += error.error.map((err: any) => err.description).join('\n');
+          } else if (error.error.error) {
+            errorMessage += error.error.error;
+          } else {
+            errorMessage += 'Bilinmeyen Hata';
+          }
+          alert(errorMessage);
         });
       })
     );
