@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, Observer } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ import { catchError, tap } from 'rxjs/operators';
 export class AuthService {
   private baseUrl = 'https://localhost:7042/api'; // TODO: change in prod
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) { }
 
   signup(email: string, username:string, password: string, isClient: boolean): Observable<any> {
     const url = `${this.baseUrl}/auth/register`;
@@ -28,7 +29,7 @@ export class AuthService {
         return new Observable((observer: Observer<any>) => {
           observer.error(error);
           console.log(error.error);
-          let errorMessage = 'Kayıt Başarısız\n';
+          let errorMessage = 'HATA:\n';
           if (error.error && error.error.length) {
             errorMessage += error.error.map((err: any) => err.description).join('\n');
           } else if (error.error.error) {
@@ -36,7 +37,11 @@ export class AuthService {
           } else {
             errorMessage += 'Bilinmeyen Hata';
           }
-          alert(errorMessage);
+          //alert(errorMessage);
+          this.snackBar.open(errorMessage, 'Kapat', {
+            duration: 10000,
+            panelClass: ['error-snackbar']
+          });
         });
       })
     );

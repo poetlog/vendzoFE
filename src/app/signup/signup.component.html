@@ -1,29 +1,38 @@
-<div>
-  Kayıt ol yada 
-  <button (click)="navigateToSignin()">Giriş Yap</button>
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+  <div class="flex flex-column align-items-center justify-content-center">
+      <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+          <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+              <div class="text-center mb-5">
+                  <div class="text-900 text-3xl font-medium mb-3">Hoş Geldin!</div>
+                  <span class="text-600 font-medium">Kayıt ol</span>
+              </div>
+
+              <div>
+                <form [formGroup]="signupForm" (ngSubmit)="onSignup()" class="center-form">
+                    <label for="username" class="block text-900 text-xl font-medium mb-2">Kullanıcı Adı</label>
+                    <input id="username" formControlName="username" type="text" placeholder="Kullanıcı adı" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
+                    
+                    <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
+                    <input id="email" formControlName="email" type="email" placeholder="Email" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
+
+                    <label for="password1" class="block text-900 font-medium text-xl mb-2">Şifre</label>
+                    <p-password id="password1" formControlName="password" placeholder="Şifre" [toggleMask]="true" styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem"></p-password>
+                    
+                    <label class="block text-900 font-medium text-xl mb-2">Hesap Türü</label>
+                    <div class="button-group">
+                      <button type="button" pButton class="btn w-full p-3 text-l" [class.selected]="selectedButton === 'false'" (click)="selectButton('false')">Kullanıcı</button>
+                      <button type="button" pButton class="btn w-full p-3 text-l" [class.selected]="selectedButton === 'true'" (click)="selectButton('true')">Satıcı</button>
+                    </div>
+                    
+                    <div class="flex align-items-center justify-content-between mb-5 gap-5">
+                        <div class="flex align-items-center">
+                        </div>
+                        <a class="font-medium no-underline ml-2 text-right cursor-pointer" href="/signin" style="color: var(--primary-color)">Zaten üye misin? Giriş Yap</a>
+                    </div>
+                    <button pButton type="submit" [loading]="isLoading" pRipple label="Kayıt Ol" class="w-full p-3 text-xl"></button>
+                 </form>
+                </div>
+          </div>
+      </div>
   </div>
-  ________________________________________________ <br>
-
-<form [formGroup]="signupForm" (ngSubmit)="onSignup()">
-    <label for="email">Email: </label>
-    <input id="email" formControlName="email" type="email" required>
-    <br>
-
-    <label for="username">Kullanıcı Adı: </label>
-    <input id="username" formControlName="username" type="text" required>
-    <br>
-
-    <label for="password">Şifre: </label>
-    <input id="password" formControlName="password" type="password" required>
-    <br>
-    
-    <label for="satici">Satıcı mısın?: </label>
-    <input id="satici" type="checkbox" formControlName="satici">
-    <br>
-    <br>
-
-    <button type="submit" [disabled]="signupForm.invalid">Kayıt Ol</button>
-  </form>
-  
-
-  
+</div>

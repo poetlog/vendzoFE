@@ -1,0 +1,16 @@
+.button-group {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn {
+    padding: 10px;
+    border: none;
+    color: black;
+    background-color: #ddd;
+  }
+  
+  .btn.selected {
+    color: white;
+    background-color: #6864f4;
+  }
