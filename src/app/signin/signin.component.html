@@ -1,12 +1,15 @@
+  
+  <div>Giriş Yap yada <button (click)="navigateToSignup()">Kayıt Ol</button> </div> <br>
 <form [formGroup]="signinForm" (ngSubmit)="onSignin()">
-    <label for="username">Sign in - Username:</label>
+    <label for="username">Kullanıcı Adı: </label>
     <input id="username" formControlName="username" type="username" required>
-    
-    <label for="password">Password:</label>
+    <br>
+    <label for="password">Şifre: </label>
     <input id="password" formControlName="password" type="password" required>
+    <br>
+    <br>
     
-    <button type="submit" [disabled]="signinForm.invalid">Sign In</button>
-    <div *ngIf="isLoading">Loading...</div>
+    <button type="submit" [disabled]="signinForm.invalid">Giriş Yap</button>
+    <div *ngIf="isLoading">Yükleniyor...</div>
   </form>
-  <button (click)="navigateToSignup()">Sign Up</button>
   

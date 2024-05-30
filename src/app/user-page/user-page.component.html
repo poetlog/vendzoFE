@@ -1,2 +1,8 @@
-<p>Welcome, {{ username }} / {{user.email}} </p> <br/>
-<button (click)="signOut()">Sign Out</button>
+<div>Profiline hoşgeldin, {{ username }}</div>
+<div>Email: {{user.email}}</div>
+<div>Adresin: {{user.currentAddress}}</div>
+<div>Tel: {{user.contactNo}}</div>
+<div>Oluşturma Tarihi: {{user.createdAt}}</div>
+<div>Satıcı mı?: {{user.isClient}}</div>
+<br>
+<button (click)="signOut()">Çıkış Yap</button>

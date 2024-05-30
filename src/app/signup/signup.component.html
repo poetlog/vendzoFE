@@ -1,18 +1,29 @@
+<div>
+  Kayıt ol yada 
+  <button (click)="navigateToSignin()">Giriş Yap</button>
+    <br>
+    <br>
+  </div>
 <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
-    <label for="email">Sign up - Email:</label>
+    <label for="email">Email: </label>
     <input id="email" formControlName="email" type="email" required>
-    
-    <label for="username">Username:</label>
+    <br>
+
+    <label for="username">Kullanıcı Adı: </label>
     <input id="username" formControlName="username" type="text" required>
+    <br>
 
-    <label for="password">Password:</label>
+    <label for="password">Şifre: </label>
     <input id="password" formControlName="password" type="password" required>
+    <br>
     
-    <label for="satici">Satıcı:</label>
+    <label for="satici">Satıcı mısın?: </label>
     <input id="satici" type="checkbox" formControlName="satici">
+    <br>
+    <br>
 
-    <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+    <button type="submit" [disabled]="signupForm.invalid">Kayıt Ol</button>
   </form>
-  <button (click)="navigateToSignin()">Sign IN</button>
+  
 
   
