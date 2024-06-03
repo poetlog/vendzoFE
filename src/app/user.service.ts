@@ -45,4 +45,15 @@ export class UserService {
               addressDTO
             );
   }
+
+  setDefaultAddress(addressId: string): Observable<any> {
+    return this.http.put<any>(
+              `${this.baseUrl}/User/setDefaultAddress?userId=${localStorage.getItem('userId')}&addressId=${addressId}`, 
+              {}
+            );
+  }
+
+  deleteAddress(addressId: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/Address/delete/soft?addressId=${addressId}`);
+  }
 }

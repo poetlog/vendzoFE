@@ -12,7 +12,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
-import { tap } from 'rxjs/operators';
+import { concatMap, tap } from 'rxjs/operators';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +20,11 @@ import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ChipModule } from 'primeng/chip';
+import { BadgeModule } from 'primeng/badge';
+import { MenuItem } from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 
 @Component({
   selector: 'app-user-page',
@@ -41,6 +46,11 @@ import { CheckboxModule } from 'primeng/checkbox';
     DialogModule,
     InputTextareaModule,
     CheckboxModule,
+    CommonModule,
+    ChipModule,
+    BadgeModule,
+    MenuModule,
+    ScrollPanelModule,
   ],
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css',
@@ -50,7 +60,6 @@ import { CheckboxModule } from 'primeng/checkbox';
 })
 export class UserPageComponent implements OnInit {
   user : any;
-  addresses: any;
   userDisabled = true;
   emailDisabled = true;
   telDisabled = true;
@@ -58,6 +67,7 @@ export class UserPageComponent implements OnInit {
   addressForm: FormGroup;
   isLoading = false;
   addAddressDialog: boolean = false;
+  addresses = [];
 
   constructor(private fb: FormBuilder,
     private authService: AuthService, 
@@ -69,24 +79,45 @@ export class UserPageComponent implements OnInit {
         passwordNew: ['', [Validators.required, Validators.minLength(8)]]
       });
       this.addressForm = this.fb.group({
-        title: ['', [Validators.required, Validators.minLength(3)]],
-        contact: [null, [Validators.required, Validators.maxLength(10),Validators.minLength(10)]],
-        details: ['', [Validators.required, Validators.minLength(5)]],
+        title: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(25)]],
+        contact: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
+        details: ['', [Validators.required, Validators.minLength(5),Validators.maxLength(150)]],
         isDefault : [true]
       });
     }
 
-  ngOnInit(): void {
-    //this.authService.isTokenExpired(localStorage.getItem('authToken'));
-    this.userService.getProfile().subscribe(data => {
-      this.user = data;
-    });
-    this.userService.getAddresses().subscribe(data => {
-      this.addresses = data;
+    ngOnInit(): void {
+      this.userService.getProfile().pipe(
+        concatMap(user => {
+          this.user = user;
+          return this.userService.getAddresses();
+        })
+      ).subscribe(data => {
+        this.addresses = data.sort((a:any, b:any) => 
+          a.id === this.user.currentAddress ? -1 : b.id === this.user.currentAddress ? 1 : 0
+        );
+      });
+    }
+
+  refreshAddresses(): void {
+    this.userService.getProfile().pipe(
+      concatMap(user => {
+        this.user = user;
+        return this.userService.getAddresses();
+      })
+    ).subscribe(data => {
+      this.addresses = data.sort((a:any, b:any) => 
+        a.id === this.user.currentAddress ? -1 : b.id === this.user.currentAddress ? 1 : 0
+      );
     });
   }
 
   showAddAddressDialog() {
+    if(this.addresses.length >= 5) {
+      this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'En Fazla 5 Adres Ekleyebilirsiniz.', life: 3000 });
+      return;
+    }
+    if(this.addresses.length === 0) this.addressForm.value.isDefault = true;
     this.addAddressDialog = true;
   }
 
@@ -131,6 +162,7 @@ export class UserPageComponent implements OnInit {
           next: data => {
             this.isLoading = false;
             this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Adres Eklendi', life: 3000 });
+            this.refreshAddresses();
             this.closeAddAddressDialog();
           },
           error: error => {
@@ -141,6 +173,35 @@ export class UserPageComponent implements OnInit {
       ).subscribe();
     }
     
+  }
+
+  onSetDefaultAddress(addressId: string): void {
+    this.userService.setDefaultAddress(addressId).pipe(
+      tap({
+        next: data => {
+          this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Adres Varsayılan Olarak Ayarlandı', life: 3000 });
+          this.refreshAddresses();
+        },
+        error: error => {
+          this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+        }
+      })
+    ).subscribe();
+  }
+
+  onDeleteAddress(addressId: string): void {
+    this.userService.deleteAddress(addressId).pipe(
+      tap({
+        next: data => {
+          this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Adres Silindi', life: 3000 });
+          this.refreshAddresses();
+          //this.addresses = this.addresses.filter((address: any) => address.id !== addressId);
+        },
+        error: error => {
+          this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+        }
+      })
+    ).subscribe();
   }
 
   async editUsername(): Promise<void> {
@@ -170,13 +231,23 @@ export class UserPageComponent implements OnInit {
   updateProfile(): Promise<boolean> {
     return new Promise((resolve, reject) => {
 
-      if(this.user.username.length < 3) {
-        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kullanıcı Adı En Az 3 Karakter Olmalı', life: 3000 });
+      if( this.user.username.length < 3 || 
+          this.user.username.length > 50 || 
+          this.user.username === '' || 
+          this.user.username === null || 
+          this.user.username === undefined || 
+          this.user.username === ' ') {
+        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Kullanıcı Adını Kontrol Ediniz', life: 3000 });
         return resolve(false);
       }
 
-      if(this.user.email === '') {
-        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Email Boş Olamaz', life: 3000 });
+      if(this.user.email.length < 3 || 
+        this.user.email.length > 50 || 
+        this.user.email === '' || 
+        this.user.email === null || 
+        this.user.email === undefined || 
+        this.user.email === ' ') {
+        this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Emaili Kontrol Ediniz', life: 3000 });
         return resolve(false);
       }
 
@@ -228,6 +299,38 @@ confirm2(event: Event) {
       rejectLabel: 'Hayır',
       accept: () => {
           this.onReset();
+      },
+      reject: () => {
+          //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+      }
+  });
+}
+confirm3(event: Event, id: string) {
+  this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Bu adresi varsayılan olarak ayarlamak istediğinize emin misiniz?',
+      icon: 'pi pi-pen-to-square',
+      acceptLabel: 'Evet',
+      rejectLabel: 'Hayır',
+      accept: () => {
+        this.onSetDefaultAddress(id);
+      },
+      reject: () => {
+          //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+      }
+  });
+}
+confirm4(event: Event, id: string) {
+  this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Bu adresi silmek istediğinize emin misiniz?',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-sm',
+      icon: 'pi pi-trash',
+      acceptLabel: 'Evet',
+      rejectLabel: 'Hayır',
+      accept: () => {
+        this.onDeleteAddress(id);
       },
       reject: () => {
           //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });

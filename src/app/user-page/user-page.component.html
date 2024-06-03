@@ -8,72 +8,77 @@
         </ng-template>
         <p-tabView>
             <p-tabPanel header="Kullanıcı Bilgilerim">
-                <label for="username" class="block text-900 text-xl font-medium mb-2">Kullanıcı Adı</label>
-                <div class="flex items-center">
-                    <input 
-                        id="username"
-                        disabled={{userDisabled}}
-                        pInputText  
-                        [(ngModel)]="user.username" 
-                        type="text" 
-                        placeholder="Kullanıcı adı" 
-                        class=" md:w-20rem mb-5 mr-2" 
-                        style="padding:1rem"
-                    >
-                    <p-button 
-                        icon="{{userDisabled ? 'pi pi-pencil' : 'pi pi-check'}}"
-                        (click)="(editUsername()) "
-                        [outlined]="true"
-                        [rounded]="true"
-                        size="large"
-                    />
-                </div>
-                
-                <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
-                <div class="flex items-center">
-                    <input 
-                        id="email" 
-                        pInputText 
-                        disabled={{emailDisabled}} 
-                        [(ngModel)]="user.email" 
-                        type="text" 
-                        placeholder="Email" 
-                        class=" md:w-20rem mb-5 mr-2" 
-                        style="padding:1rem"
-                    >
-                    <p-button 
-                        icon="{{emailDisabled ? 'pi pi-pencil' : 'pi pi-check'}}"
-                        (click)="(editEmail()) "
-                        [outlined]="true"
-                        [rounded]="true"
-                        size="large"
-                    />
-                </div>
-                <label for="tel" class="block text-900 text-xl font-medium mb-2">Telefon Numarası</label>
-                <small id="tel-help">
-                    Örnek: "5051234567"
-                </small>
-                <div class="flex items-center">
-                    <p-inputNumber  
-                        id="tel" 
-                        [(ngModel)]="user.contactNo" 
-                        type="text"
-                        aria-describedby="tel-help"
-                        placeholder="Telefon Numarası" 
-                        class=" md:w-20rem mb-5 mr-2"
-                        [useGrouping]="false"
-                        [disabled]="telDisabled"
-                    />
-                    
-                    <p-button 
-                        icon="{{telDisabled ? 'pi pi-pencil' : 'pi pi-check'}}"
-                        (click)="(editTel()) "
-                        [outlined]="true"
-                        [rounded]="true"
-                        size="large"
-                    />
-                </div>
-                
+                <div class="flex align-items-center justify-content-center">
+                    <div class="flex flex-column align-items-center justify-content-center">
+                        <div>
+                        <label for="username" class="block text-900 text-xl font-medium mb-2">Kullanıcı Adı</label>
+                        <div class="flex items-center">
+                            <input 
+                                id="username"
+                                disabled={{userDisabled}}
+                                pInputText  
+                                [(ngModel)]="user.username" 
+                                type="text" 
+                                placeholder="Kullanıcı adı" 
+                                class=" mb-5 mr-2" 
+                                style="padding:1rem"
+                            >
+                            <p-button 
+                                icon="{{userDisabled ? 'pi pi-pencil' : 'pi pi-check'}}"
+                                (click)="(editUsername()) "
+                                [outlined]="true"
+                                [rounded]="true"
+                                size="large"
+                            />
+                        </div>
+                        
+                        <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
+                        <div class="flex items-center">
+                            <input 
+                                id="email" 
+                                pInputText 
+                                disabled={{emailDisabled}} 
+                                [(ngModel)]="user.email" 
+                                type="text" 
+                                placeholder="Email" 
+                                class=" mb-5 mr-2" 
+                                style="padding:1rem"
+                            >
+                            <p-button 
+                                icon="{{emailDisabled ? 'pi pi-pencil' : 'pi pi-check'}}"
+                                (click)="(editEmail()) "
+                                [outlined]="true"
+                                [rounded]="true"
+                                size="large"
+                            />
+                        </div>
+                        <label for="tel" class="block text-900 text-xl font-medium mb-2">Telefon Numarası</label>
+                        <small id="tel-help">
+                            Örnek: "5051234567"
+                        </small>
+                        <div class="flex items-center">
+                            <p-inputNumber  
+                                id="tel" 
+                                [(ngModel)]="user.contactNo" 
+                                type="text"
+                                aria-describedby="tel-help"
+                                placeholder="Telefon Numarası" 
+                                class=" mb-5 mr-2"
+                                [useGrouping]="false"
+                                [disabled]="telDisabled"
+                            />
+                            
+                            <p-button 
+                                icon="{{telDisabled ? 'pi pi-pencil' : 'pi pi-check'}}"
+                                (click)="(editTel()) "
+                                [outlined]="true"
+                                [rounded]="true"
+                                size="large"
+                            />
+                        </div>
+                      </div>
+                    </div>
+            </div>
             </p-tabPanel>
             <p-tabPanel header="Adreslerim">
                     <p-button 
@@ -119,10 +124,10 @@
                                 pInputTextarea
                                 ></textarea>
                             </div>
-                            <div class="flex align-items-center gap-3 mb-5">
+                            <div *ngIf="addresses.length !== 0" class="flex align-items-center gap-3 mb-5">
                                 <p-checkbox 
                                     formControlName="isDefault" 
-                                    [binary]="true" 
+                                    [binary]="true"
                                     inputId="isDefault" />
                                 <label for="isDefault">Varsayılan adresim olarak kaydet</label>
                             </div>
@@ -132,7 +137,45 @@
                             </div>
                         </form>
                     </p-dialog>
-                Henüz adres yok.
+                    <p-scrollPanel  *ngIf="addresses.length !== 0" 
+                                    [style]="{ width: '100%', height: '25rem' }"
+                                    styleClass="custombar1">
+                        <div *ngFor="let address of addresses" class="w-25rem gap-3 mb-3">
+                            <p-card class="mt-4">
+                                    <div class="flex gap-3 mt-1">
+                                        <h2 class="pt-1 pl-1">
+                                            {{address['title']}}
+                                            <p-chip  *ngIf="address['id'] === user['currentAddress']" label="Varsayılan" icon="pi pi-star" />
+                                        </h2>
+                                        
+                                    </div>
+                                    <div>
+                                        <i>Tel: {{address['contactNo']}} </i><br>
+                                        <p class="m-0">{{address['address1']}}</p>
+                                    </div>
+                                    <ng-template pTemplate="footer">
+                                        <div class="flex gap-3 mt-1">
+                                            <p-button 
+                                                icon="{{address['id'] === user['currentAddress'] ? 'pi pi-star-fill':'pi pi-star'}}"
+                                                disabled="{{address['id'] === user['currentAddress']}}"
+                                                [outlined]="true" 
+                                                class="w-full" 
+                                                (click)="confirm3($event, address['id'])"
+                                                styleClass="w-full" />
+                                            <p-button 
+                                                label="Adresi Sil" 
+                                                disabled="{{address['id'] === user['currentAddress']}}"
+                                                severity="danger" 
+                                                class="w-full" 
+                                                styleClass="w-full" 
+                                                (click)="confirm4($event, address['id'])"
+                                                [outlined]="true"/>
+                                        </div>
+                                    </ng-template>
+                            </p-card>
+                        </div>
+                    </p-scrollPanel>
+                      <div *ngIf="addresses.length === 0" >Henüz kayıtlı adresiniz yok. Yukarıdan ekleyebilirsiniz.</div>
             </p-tabPanel>
             <p-tabPanel header="Şifre Değiştir">
                 <div class="flex align-items-center justify-content-center">
