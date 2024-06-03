@@ -1,10 +1,10 @@
 <div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
   <div class="flex flex-column align-items-center justify-content-center">
       <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
-          <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+        <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
               <div class="text-center mb-5">
                   <div class="text-900 text-3xl font-medium mb-3">Hoş Geldin!</div>
-                  <span class="text-600 font-medium">Kayıt ol</span>
+                  <span class="text-600 font-medium">KAYIT OL</span>
               </div>
 
               <div>
@@ -20,8 +20,8 @@
                     
                     <label class="block text-900 font-medium text-xl mb-2">Hesap Türü</label>
                     <div class="button-group">
-                      <button type="button" pButton class="btn w-full p-3 text-l" [class.selected]="selectedButton === 'false'" (click)="selectButton('false')">Kullanıcı</button>
-                      <button type="button" pButton class="btn w-full p-3 text-l" [class.selected]="selectedButton === 'true'" (click)="selectButton('true')">Satıcı</button>
+                      <button type="button" pButton class="btn w-full p-3 text-l mb-2" [class.selected]="selectedButton === 'false'" (click)="selectButton('false')">Kullanıcı</button>
+                      <button type="button" pButton class="btn w-full p-3 text-l mb-2" [class.selected]="selectedButton === 'true'" (click)="selectButton('true')">Satıcı</button>
                     </div>
                     
                     <div class="flex align-items-center justify-content-between mb-5 gap-5">

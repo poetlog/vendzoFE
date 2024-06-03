@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Observable, Observer } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AuthService {
   private baseUrl = 'https://localhost:7042/api'; // TODO: change in prod
 
-  constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) { }
+  constructor(private http: HttpClient, 
+    private router: Router, 
+    private snackBar: MatSnackBar) { }
 
   signup(email: string, username:string, password: string, isClient: boolean): Observable<any> {
     const url = `${this.baseUrl}/auth/register`;
@@ -73,6 +75,15 @@ export class AuthService {
     return this.getToken() !== null;
   }
 
+  isTokenExpired(token: any): void {
+    const decodedToken: any = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    if (decodedToken.exp < currentTime){
+      console.log('Token süresi dolmuş');
+      this.logout();
+    }
+  }
+
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userId');
@@ -80,3 +91,4 @@ export class AuthService {
   }
 
 }
+

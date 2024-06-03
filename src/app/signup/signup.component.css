@@ -8,9 +8,10 @@
     border: none;
     color: black;
     background-color: #ddd;
-  }
+    justify-content: center;
+}
   
   .btn.selected {
     color: white;
-    background-color: #6864f4;
+    background-color: var(--primary-color);
   }

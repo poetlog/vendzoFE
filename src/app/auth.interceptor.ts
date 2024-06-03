@@ -7,6 +7,8 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
   const authService = inject(AuthService);
   const authToken = authService.getToken();
 
+  //authService.isTokenExpired(localStorage.getItem('authToken'));
+
   if (authToken) {
     const authReq = req.clone({
       setHeaders: { Authorization: `Bearer ${authToken}` }
