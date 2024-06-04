@@ -25,6 +25,8 @@ import { BadgeModule } from 'primeng/badge';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { DataViewModule } from 'primeng/dataview';
+
 
 @Component({
   selector: 'app-user-page',
@@ -51,6 +53,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     BadgeModule,
     MenuModule,
     ScrollPanelModule,
+    DataViewModule,
   ],
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css',
@@ -65,9 +68,15 @@ export class UserPageComponent implements OnInit {
   telDisabled = true;
   resetForm: FormGroup;
   addressForm: FormGroup;
+  itemForm: FormGroup;
+  itemEditForm: FormGroup;
   isLoading = false;
   addAddressDialog: boolean = false;
+  addItemDialog: boolean = false;
+  editItemDialog: boolean = false;
+  itemToEdit:string = '';
   addresses = [];
+  items = [];
 
   constructor(private fb: FormBuilder,
     private authService: AuthService, 
@@ -84,6 +93,22 @@ export class UserPageComponent implements OnInit {
         details: ['', [Validators.required, Validators.minLength(5),Validators.maxLength(150)]],
         isDefault : [true]
       });
+      this.itemForm = this.fb.group({
+        title: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(50)]],
+        category: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(50)]],
+        description: ['', [Validators.required, Validators.minLength(5),Validators.maxLength(150)]],
+        photo: ['', [Validators.maxLength(500)]],
+        price: [0, [Validators.required, Validators.min(0)]],
+        stock: [0, [Validators.required, Validators.min(0)]]
+      });
+      this.itemEditForm = this.fb.group({
+        title: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(50)]],
+        category: ['', [Validators.required, Validators.minLength(3),Validators.maxLength(50)]],
+        description: ['', [Validators.required, Validators.minLength(5),Validators.maxLength(150)]],
+        photo: ['', [Validators.maxLength(500)]],
+        price: [0, [Validators.required, Validators.min(0)]],
+        stock: [0, [Validators.required, Validators.min(0)]]
+      });
     }
 
     ngOnInit(): void {
@@ -96,6 +121,9 @@ export class UserPageComponent implements OnInit {
         this.addresses = data.sort((a:any, b:any) => 
           a.id === this.user.currentAddress ? -1 : b.id === this.user.currentAddress ? 1 : 0
         );
+      });
+      this.userService.getItems().subscribe(data => {
+        this.items = data;
       });
     }
 
@@ -121,9 +149,41 @@ export class UserPageComponent implements OnInit {
     this.addAddressDialog = true;
   }
 
+  showAddItemDialog() {
+    if(this.items.length >= 25) {
+      this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'En Fazla 25 Ürün Ekleyebilirsiniz.', life: 3000 });
+      return;
+    }
+    this.addItemDialog = true;
+  }
+
+  showEditItemDialog(item: any) {
+    if(item !== null) {
+      this.itemEditForm.setValue({
+        title: item.title,
+        category: item.category,
+        description: item.description,
+        photo: item.photo,
+        price: item.price,
+        stock: item.stock
+      });
+      this.itemToEdit = item.id;
+      this.editItemDialog = true;
+    }
+    return;
+  }
+
   closeAddAddressDialog() {
     this.addressForm.reset({ isDefault: true });
     this.addAddressDialog = false;
+  }
+  closeAddItemDialog() {
+    this.itemForm.reset();
+    this.addItemDialog = false;
+  }
+  closeEditItemDialog() {
+    this.itemEditForm.reset({ isDefault: true });
+    this.editItemDialog = false;
   }
 
 
@@ -172,7 +232,53 @@ export class UserPageComponent implements OnInit {
         })
       ).subscribe();
     }
-    
+    else {
+      this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+    }
+  }
+
+  onAddItem(): void {
+    if (this.itemForm.valid) {
+      this.userService.addItem(this.itemForm.value).pipe(
+        tap({
+          next: data => {
+            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Ürün Eklendi', life: 3000 });
+            this.userService.getItems().subscribe(data => {
+              this.items = data;
+            });
+            this.closeAddItemDialog();
+          },
+          error: error => {
+            this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+          }
+        })
+      ).subscribe();
+    }
+    else {
+      this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+    }
+  }
+
+  onEditItem(): void {
+    if (this.itemEditForm.valid) {
+      this.userService.editItem(this.itemToEdit, this.itemEditForm.value).pipe(
+        tap({
+          next: data => {
+            this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Ürün Güncellendi', life: 3000 });
+            this.userService.getItems().subscribe(data => {
+              this.items = data;
+            });
+            this.closeEditItemDialog();
+          },
+          error: error => {
+            this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+          }
+        })
+      ).subscribe();
+    }
+    else {
+      this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+    }
   }
 
   onSetDefaultAddress(addressId: string): void {
@@ -196,6 +302,22 @@ export class UserPageComponent implements OnInit {
           this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Adres Silindi', life: 3000 });
           this.refreshAddresses();
           //this.addresses = this.addresses.filter((address: any) => address.id !== addressId);
+        },
+        error: error => {
+          this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+        }
+      })
+    ).subscribe();
+  }
+
+  onDeleteItem(itemId: string): void {
+    this.userService.deleteItem(itemId).pipe(
+      tap({
+        next: data => {
+          this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Ürün Silindi', life: 3000 });
+          this.userService.getItems().subscribe(data => {
+            this.items = data;
+          });
         },
         error: error => {
           this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
@@ -331,6 +453,23 @@ confirm4(event: Event, id: string) {
       rejectLabel: 'Hayır',
       accept: () => {
         this.onDeleteAddress(id);
+      },
+      reject: () => {
+          //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+      }
+  });
+}
+confirm5(event: Event, id: string) {
+  this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Bu ürünü silmek istediğinize emin misiniz?',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-sm',
+      icon: 'pi pi-trash',
+      acceptLabel: 'Evet',
+      rejectLabel: 'Hayır',
+      accept: () => {
+        this.onDeleteItem(id);
       },
       reject: () => {
           //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });

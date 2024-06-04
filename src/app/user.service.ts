@@ -56,4 +56,48 @@ export class UserService {
   deleteAddress(addressId: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/Address/delete/soft?addressId=${addressId}`);
   }
+
+  getItems(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/Item/find/user=${localStorage.getItem('userId')}`);
+  }
+
+  addItem(item: any): Observable<any> {
+    if(item.photo === '' || item.photo === null || item.photo === undefined)
+        item.photo = "https://placehold.co/600x400?text=PLACEHOLDER"
+    const itemDTO = {
+      title: item.title,
+      sellerId: localStorage.getItem('userId'),
+      description: item.description,
+      category: item.category,
+      price: item.price.toString(),
+      photo: item.photo,
+      stock: item.stock.toString(),
+    };
+    return this.http.post<any>(
+              `${this.baseUrl}/Item/create`, 
+              itemDTO
+            );
+  }
+  deleteItem(itemId: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/Item/delete/soft?id=${itemId}`);
+  }
+
+  editItem(itemId:string, item: any): Observable<any> {
+    if(item.photo === '' || item.photo === null || item.photo === undefined)
+        item.photo = "https://placehold.co/600x400?text=PLACEHOLDER"
+    const itemDTO = {
+      id: itemId,
+      title: item.title,
+      sellerId: localStorage.getItem('userId'),
+      description: item.description,
+      category: item.category,
+      price: item.price,
+      photo: item.photo,
+      stock: item.stock,
+    };
+    return this.http.put<any>(
+              `${this.baseUrl}/Item/update?itemId=${itemId}`, 
+              itemDTO
+            );
+  }
 }

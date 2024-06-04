@@ -199,6 +199,197 @@
                     </div>
                   </div>
             </p-tabPanel>
+            <p-tabPanel header="Ürünlerim" *ngIf="user['isClient'] === true">
+                <ng-template pTemplate="content">
+                    <p-button 
+                        icon="pi pi-plus"
+                        [outlined]="true"
+                        [rounded]="true"
+                        size="small"
+                        label="Yeni ürün"
+                        (click)="showAddItemDialog()"
+                    /> <br><br>
+                    <div *ngIf="items.length === 0" >Henüz satışta ürününüz yok. Yukarıdan ekleyebilirsiniz.</div>
+                    
+                    <p-dialog header="Yeni Ürün Ekle" [modal]="true" [(visible)]="addItemDialog" [style]="{ width: '50rem' }">
+                        <span class="p-text-secondary block mb-5">Ürün detaylarını giriniz.</span>
+                        <form [formGroup]="itemForm" (ngSubmit)="onAddItem()">
+                            <div class="flex align-items-center gap-3 mb-3">
+                                <label for="itemTitle" class="font-semibold w-6rem">Ürün Başlığı</label>
+                                <input 
+                                    pInputText 
+                                    placeholder="Örnek: 1 Kg. Kırmızı Elma" 
+                                    formControlName="title" 
+                                    class="flex-auto" 
+                                    autocomplete="off" 
+                                    id="itemTitle"
+                                />
+                            </div>
+                            <div class="flex align-items-center gap-3 mb-3">
+                                <label for="itemCategory" class="font-semibold w-6rem">Kategori</label>
+                                <input 
+                                    pInputText 
+                                    placeholder="Örnek: Meyve" 
+                                    formControlName="category" 
+                                    class="flex-auto" 
+                                    autocomplete="off" 
+                                    id="itemCategory"
+                                />
+                                <label for="itemPhoto" class="font-semibold w-6rem">Foto URL</label>
+                                <input 
+                                    pInputText 
+                                    placeholder="Örnek: imgur.com/123.jpg" 
+                                    formControlName="photo" 
+                                    class="flex-auto" 
+                                    autocomplete="off" 
+                                    id="itemPhoto"
+                                />
+                            </div>
+                            <div class="flex align-items-center gap-3 mb-5">
+                                <label for="itemPrice" class="font-semibold w-6rem">Fiyat</label>
+                                <p-inputNumber  
+                                id="itemPrice" 
+                                formControlName="price"
+                                placeholder="Örnek: 50,99"
+                                mode="currency" 
+                                currency="TRY" 
+                                locale="tr-TR"
+                                class="flex-auto"
+                                />
+                                <label for="itemStock" class="font-semibold w-6rem">Stok</label>
+                                <p-inputNumber  
+                                id="itemStock" 
+                                formControlName="stock"
+                                placeholder="Örnek: 985"
+                                type="text"
+                                class="flex-auto"
+                                [useGrouping]="false"
+                                />
+                            </div>
+                            <div class="flex align-items-center gap-3 mb-5">
+                                <label for="itemDetails" class="font-semibold w-6rem">Ürün Açıklaması</label>
+                                <textarea 
+                                id="itemDetails" 
+                                formControlName="description"
+                                placeholder="Örnek: Amasya elması, 1 kg. fiyatıdır. Tüm Türkiye'ye kargo yapılır."
+                                rows="9" 
+                                cols="70" 
+                                pInputTextarea
+                                ></textarea>
+                            </div>
+                            <div class="flex justify-content-end gap-2">
+                                <p-button label="İptal" severity="secondary" (click)="closeAddItemDialog()" />
+                                <p-button label="Kaydet" type="submit" />
+                            </div>
+                        </form>
+                    </p-dialog>
+
+                    <p-dialog header="Ürünü Düzenle" [modal]="true" [(visible)]="editItemDialog" [style]="{ width: '50rem' }">
+                        <span class="p-text-secondary block mb-5">Ürün detaylarını giriniz.</span>
+                        <form [formGroup]="itemEditForm" (ngSubmit)="onEditItem()">
+                            <div class="flex align-items-center gap-3 mb-3">
+                                <label for="itemTitle" class="font-semibold w-6rem">Ürün Başlığı</label>
+                                <input 
+                                    pInputText 
+                                    placeholder="Örnek: 1 Kg. Kırmızı Elma" 
+                                    formControlName="title" 
+                                    class="flex-auto" 
+                                    autocomplete="off" 
+                                    id="itemTitle"
+                                />
+                            </div>
+                            <div class="flex align-items-center gap-3 mb-3">
+                                <label for="itemCategory" class="font-semibold w-6rem">Kategori</label>
+                                <input 
+                                    pInputText 
+                                    placeholder="Örnek: Meyve" 
+                                    formControlName="category" 
+                                    class="flex-auto" 
+                                    autocomplete="off" 
+                                    id="itemCategory"
+                                />
+                                <label for="itemPhoto" class="font-semibold w-6rem">Foto URL</label>
+                                <input 
+                                    pInputText 
+                                    placeholder="Örnek: imgur.com/123.jpg" 
+                                    formControlName="photo" 
+                                    class="flex-auto" 
+                                    autocomplete="off" 
+                                    id="itemPhoto"
+                                />
+                            </div>
+                            <div class="flex align-items-center gap-3 mb-5">
+                                <label for="itemPrice" class="font-semibold w-6rem">Fiyat</label>
+                                <p-inputNumber  
+                                id="itemPrice" 
+                                formControlName="price"
+                                placeholder="Örnek: 50,99"
+                                mode="currency" 
+                                currency="TRY" 
+                                locale="tr-TR"
+                                class="flex-auto"
+                                />
+                                <label for="itemStock" class="font-semibold w-6rem">Stok</label>
+                                <p-inputNumber  
+                                id="itemStock" 
+                                formControlName="stock"
+                                placeholder="Örnek: 985"
+                                type="text"
+                                class="flex-auto"
+                                [useGrouping]="false"
+                                />
+                            </div>
+                            <div class="flex align-items-center gap-3 mb-5">
+                                <label for="itemDetails" class="font-semibold w-6rem">Ürün Açıklaması</label>
+                                <textarea 
+                                id="itemDetails" 
+                                formControlName="description"
+                                placeholder="Örnek: Amasya elması, 1 kg. fiyatıdır. Tüm Türkiye'ye kargo yapılır."
+                                rows="9" 
+                                cols="70" 
+                                pInputTextarea
+                                ></textarea>
+                            </div>
+                            <div class="flex justify-content-end gap-2">
+                                <p-button label="İptal" severity="secondary" (click)="closeEditItemDialog()" />
+                                <p-button label="Kaydet" type="submit" />
+                            </div>
+                        </form>
+                    </p-dialog>
+
+                    <div *ngIf="items.length !== 0" class="card">
+                        <p-dataView #dv [value]="items" [rows]="5" [paginator]="true">
+                            <ng-template pTemplate="list" let-products>
+                                <div class="grid grid-nogutter">
+                                    <div class="col-12" *ngFor="let item of products; let first = first" class="col-12">
+                                        <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" [ngClass]="{ 'border-top-1 surface-border': !first }">
+                                            <div class="md:w-10rem relative">
+                                                <img class="block xl:block mx-auto border-round w-full" [src]="item.photo" />
+                                            </div>
+                                            <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+                                                <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                                                    <div>
+                                                        <span class="font-medium text-secondary text-sm">{{ 'Kategori: '+item.category }}</span>
+                                                        <div class="text-lg font-medium text-900 mt-2">{{ item.title }}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="flex flex-column md:align-items-end gap-5">
+                                                    <span class="text-xl font-semibold text-900">{{ item.price + '₺' }}</span>
+                                                    <div class="flex flex-row-reverse md:flex-row gap-2">
+                                                        <p-button icon="pi pi-trash" severity="danger" (click)="confirm5($event, item.id)" [outlined]="true" />
+                                                        <p-button icon="pi pi-pencil" (click)="showEditItemDialog(item)" [outlined]="true" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </p-dataView>
+                    </div>
+
+                </ng-template>
+            </p-tabPanel>
         </p-tabView>
             <p-toast />
             <p-confirmPopup />
