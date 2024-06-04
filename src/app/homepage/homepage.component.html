@@ -1,1 +1,123 @@
-<p>homepage works!</p>
+<p>navbar goes here</p>
+<br>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h4>Kampanyalı ürünler</h4>
+            <p-carousel 
+            [value]="products" 
+            [numVisible]="5" 
+            [numScroll]="1" 
+            [circular]="true" 
+            [responsiveOptions]="responsiveOptions" 
+            autoplayInterval="5000">
+            <ng-template let-product pTemplate="item">
+                    <div class="border-1 surface-border border-round m-2 p-3">
+                        <div class="mb-3">
+                            <div class="relative mx-auto">
+                                <img 
+                                    src="{{ product.photo }}" 
+                                    [alt]="product.title" 
+                                    class="w-full border-round" />
+                            </div>
+                        </div>
+                        <div class="mb-3 font-medium">
+                            {{ product.title }}
+                        </div>
+                        <div class="flex justify-content-between align-items-center">
+                        <div class="mt-0 font-semibold text-xl">
+                            {{ product.price + '₺' }}
+                        </div>
+                            <span>
+                                <p-button icon="pi pi-search" severity="secondary" [outlined]="true" />
+                                <p-button icon="pi pi-shopping-cart" styleClass="ml-2" />
+                            </span>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-carousel>
+        </div>
+    </div>
+    <div class="col-8" style="grid-row: span 2">
+        <div class="card">
+            <h4>Tüm ürünler</h4>
+            <p>dataview with search/filter/sort/pagination(server-side)
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            </p>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="card">
+            <h4>En çok satanlar</h4>
+            <p-carousel 
+            [value]="products" 
+            [numVisible]="1" 
+            [numScroll]="1" 
+            [circular]="true" 
+            [responsiveOptions]="responsiveOptions" 
+            autoplayInterval="5000">
+            <ng-template let-product pTemplate="item">
+                    <div class="border-1 surface-border border-round m-2 p-3">
+                        <div class="mb-3">
+                            <div class="relative mx-auto">
+                                <img 
+                                    src="{{ product.photo }}" 
+                                    [alt]="product.title" 
+                                    class="w-full border-round" />
+                            </div>
+                        </div>
+                        <div class="mb-3 font-medium">
+                            {{ product.title }}
+                        </div>
+                        <div class="flex justify-content-between align-items-center">
+                        <div class="mt-0 font-semibold text-xl">
+                            {{ product.price + '₺' }}
+                        </div>
+                            <span>
+                                <p-button icon="pi pi-search" severity="secondary" [outlined]="true" />
+                                <p-button icon="pi pi-shopping-cart" styleClass="ml-2" />
+                            </span>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-carousel>
+        </div>
+        <div class="card">
+            <h4>Son baktıklarınıza benzer</h4>
+            <p-carousel 
+            [value]="products" 
+            [numVisible]="1" 
+            [numScroll]="1" 
+            [circular]="true"
+            orientation="vertical"
+            verticalViewPortHeight="420px"
+            [responsiveOptions]="responsiveOptions" 
+            autoplayInterval="5000">
+            <ng-template let-product pTemplate="item">
+                    <div class="border-1 surface-border border-round m-2 p-3">
+                        <div class="mb-3">
+                            <div class="relative mx-auto">
+                                <img 
+                                    src="{{ product.photo }}" 
+                                    [alt]="product.title" 
+                                    class="w-full border-round" />
+                            </div>
+                        </div>
+                        <div class="mb-3 font-medium">
+                            {{ product.title }}
+                        </div>
+                        <div class="flex justify-content-between align-items-center">
+                        <div class="mt-0 font-semibold text-xl">
+                            {{ product.price + '₺' }}
+                        </div>
+                            <span>
+                                <p-button icon="pi pi-search" severity="secondary" [outlined]="true" />
+                                <p-button icon="pi pi-shopping-cart" styleClass="ml-2" />
+                            </span>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-carousel>
+        </div>
+    </div>
+</div>
