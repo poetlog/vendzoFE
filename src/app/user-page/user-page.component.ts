@@ -373,13 +373,15 @@ export class UserPageComponent implements OnInit {
         return resolve(false);
       }
 
-      if(this.user.contactNo && 
-        this.user.contactNo.toString().length != 10 && 
-        this.user.contactNo.toString().length != 0) {
-          this.messageService.add({ severity: 'error', summary: 'Hata-Telefon', detail: 'Lütfen Formata Uyunuz', life: 3000 });
-          return resolve(false);
+      if(this.user.contactNo != null || this.user.contactNo != undefined) {
+        if(this.user.contactNo && 
+          this.user.contactNo.toString().length != 10 && 
+          this.user.contactNo.toString().length != 0) {
+            this.messageService.add({ severity: 'error', summary: 'Hata-Telefon', detail: 'Lütfen Formata Uyunuz', life: 3000 });
+            return resolve(false);
+        }
+        else this.user.contactNo = this.user.contactNo.toString();
       }
-      else this.user.contactNo = this.user.contactNo.toString();
 
       this.userService.updateProfile(this.user).pipe(
         tap({

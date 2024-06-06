@@ -87,7 +87,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userId');
-    this.router.navigate(['/signin']);
+    window.location.href = '';
   }
 
 }

@@ -3,12 +3,13 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MenuItem, PrimeNGConfig } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
+import { AppLayoutModule } from './layout/app.layout.module';
 
 @Component({
   selector: 'app-root',
   template: '<router-outlet></router-outlet>',
   standalone: true,
-  imports: [CommonModule, RouterModule, MenubarModule]
+  imports: [CommonModule, RouterModule, MenubarModule, AppLayoutModule]
 })
 export class AppComponent {
   items: MenuItem[] = [];
