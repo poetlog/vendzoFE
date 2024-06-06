@@ -69,6 +69,11 @@ export class UserService {
   addItem(item: any): Observable<any> {
     if(item.photo === '' || item.photo === null || item.photo === undefined)
         item.photo = "https://placehold.co/600x400?text=PLACEHOLDER"
+
+    // Normalize category name
+    item.category = item.category.toLowerCase().trim();
+    item.category = item.category.replace(/\b\w/g, (l:string) => l.toUpperCase());
+
     const itemDTO = {
       title: item.title,
       sellerId: localStorage.getItem('userId'),

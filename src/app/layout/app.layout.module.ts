@@ -19,6 +19,7 @@ import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
 import { CommonModule } from '@angular/common';
 import { ChipModule } from 'primeng/chip';
+import { TagModule } from 'primeng/tag';
 
 @NgModule({
     declarations: [
@@ -43,7 +44,8 @@ import { ChipModule } from 'primeng/chip';
         RippleModule,
         RouterModule,
         AppConfigModule,
-        ChipModule
+        ChipModule,
+        TagModule
     ],
     exports: [AppLayoutComponent]
 })

@@ -3,7 +3,7 @@
         <div class="card">
             <h4>Kampanyalı ürünler</h4>
             <p-carousel 
-            [value]="products" 
+            [value]="productsHeader" 
             [numVisible]="5" 
             [numScroll]="1" 
             [circular]="true" 
@@ -36,23 +36,89 @@
             </p-carousel>
         </div>
     </div>
-    <div class="col-8" style="grid-row: span 2">
-        <div class="card">
-            <h4>Tüm ürünler</h4>
-            <p>dataview with search/filter/sort/pagination(server-side)
-                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            </p>
+    <div class="col-8">
+        <div class="card" >
+                <p-dataView #dv [emptyMessage]="'Aradığınız ürün bulunamadı.'" [value]="products" [rows]="9" layout="grid">
+				<ng-template pTemplate="header">
+					<div class="flex flex-column md:flex-row md:justify-content-between gap-2">
+						<p-dropdown [options]="sortOptions" placeholder="Sırala" (onChange)="onSortChange($event)" ></p-dropdown>
+						<span>
+                            <form (ngSubmit)="searchProducts()">
+                                <input type="search" pInputText name="searchTerm" [(ngModel)]="searchTerm" placeholder="Ara">
+                                <button pButton [outlined]="true" icon="pi pi-search"></button>
+                            </form>
+                        </span>	
+                        <span>
+                            <form (ngSubmit)="filterProducts()">
+                                <input type="search" pInputText name="category" [(ngModel)]="category" placeholder="Kategori">
+                                <button pButton [outlined]="true" icon="pi pi-search"></button>
+                            </form>
+                        </span>	
+						<p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+					</div>
+				</ng-template>
+
+				<ng-template let-products pTemplate="listItem">
+					<div class="col-12" *ngFor="let product of products">
+						<div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+							<img [src]="product.photo" class="my-4 md:my-0 w-9 md:w-10rem shadow-2 mr-5"/>
+							<div class="flex-1 flex flex-column align-items-center text-center md:text-left">
+                                <div class="flex align-items-center mt-2">
+									<i class="pi pi-tag mr-2"></i>
+									<span class="font-semibold">{{product.category}}</span>
+								</div>
+								<div class="font-bold text-2xl">{{product.title}}</div>
+								
+							</div>
+							<div class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
+								<span class="text-2xl font-semibold mb-2 align-self-center md:align-self-end">{{product.price}}₺</span>
+								<p-button icon="pi pi-eye" label="Detaylar" styleClass="mb-2 p-button-sm"></p-button>
+							</div>
+						</div>
+					</div>
+				</ng-template>
+
+				<ng-template let-products pTemplate="gridItem">
+					<div class="grid grid-nogutter">
+					<div class="col-12 md:col-4" *ngFor="let product of products">
+						<div class="card m-3 border-1 surface-border">
+							<div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
+								<div class="flex align-items-center">
+									<i class="pi pi-tag mr-2"></i>
+									<span class="font-semibold">{{product.category}}</span>
+								</div>
+							</div>
+							<div class="flex flex-column align-items-center text-center mb-3">
+								<img [src]="product.photo" class="w-9 shadow-2 my-3 mx-0"/>
+								<div class="text-2xl font-bold">{{product.title}}</div>
+							</div>
+							<div class="flex align-items-center justify-content-between">
+								<span class="text-2xl font-semibold">{{product.price}}₺</span>
+								<p-button icon="pi pi-shopping-cart" ></p-button>
+							</div>
+						</div>
+					</div>
+					</div>
+				</ng-template>
+                
+			</p-dataView>
+            <p-paginator 
+                    (onPageChange)="onPageChange($event)" 
+                    [first]="first" 
+                    [rows]="rows" 
+                    [totalRecords]="productCount" 
+                     />
         </div>
     </div>
     <div class="col-4">
         <div class="card">
-            <h4>En çok satanlar</h4>
+            <h4>En yeni ürünler</h4>
             <p-carousel 
-            [value]="products" 
+            [value]="productsSideTop" 
             [numVisible]="1" 
             [numScroll]="1" 
             [circular]="true" 
-            [responsiveOptions]="responsiveOptions" 
+            [responsiveOptions]="responsiveOptions"
             autoplayInterval="5500">
             <ng-template let-product pTemplate="item">
                     <div class="border-1 surface-border border-round m-2 p-3">
@@ -81,14 +147,19 @@
             </p-carousel>
         </div>
         <div class="card">
+            <h4>Promosyonlar</h4>
+            Açılışa özel 75₺ indirim için kod: <span class="font-semibold">WELCOME75</span><br>
+            Sepette %10 indirim için kod: <span class="font-semibold">PROMO10</span><br>
+        </div>
+        <div class="card">
             <h4>Son baktıklarınıza benzer</h4>
             <p-carousel 
-            [value]="products" 
+            [value]="productsSideBottom" 
             [numVisible]="1" 
             [numScroll]="1" 
             [circular]="true"
             orientation="vertical"
-            verticalViewPortHeight="420px"
+            verticalViewPortHeight="27rem"
             [responsiveOptions]="responsiveOptions" 
             autoplayInterval="6000">
             <ng-template let-product pTemplate="item">
@@ -117,5 +188,7 @@
                 </ng-template>
             </p-carousel>
         </div>
+        
     </div>
-</div>
+    <p-scrollTop />
+</div><br>
