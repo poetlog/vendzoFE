@@ -27,6 +27,10 @@ export class ItemService {
     return this.http.get(`${this.baseUrl}/Item/find/id=${id}`);
   }
 
+  getSellerOfItem(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Item/find/seller/itemId=${id}`);
+  }
+
   getItemsByCategory(category: string, page: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/Item/filter/${category}/page=${page}`);
   }
@@ -63,4 +67,33 @@ export class ItemService {
     return this.http.get(`${this.baseUrl}/Item/featured`);
   }
   
+  addToCart(itemId: string): Observable<any> {
+    let basket = {
+      UserId: localStorage.getItem('userId'),
+      ItemId: itemId,
+      Quantity: 1
+    };
+    return this.http.post(`${this.baseUrl}/Basket/create`, basket );
+  }
+  
+  getCartItems(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Basket/user/${localStorage.getItem('userId')}`);
+  }
+
+  deleteCartItem(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/Basket/delete/soft?basketId=${id}`);
+  }
+
+  deleteCart(): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/Basket/clear/user/${localStorage.getItem('userId')}`);
+  }
+
+  updateCartItemQuantity(id: number, quantity: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/Basket/update/quantity/basketId=${id}&quantity=${quantity}`, null);
+  }
+
+  checkPromoCode(code: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Promotion/check/code=${code}`);
+  }
+
 }

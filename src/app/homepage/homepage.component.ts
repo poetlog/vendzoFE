@@ -11,6 +11,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { FormsModule } from '@angular/forms';
 import { PaginatorModule } from 'primeng/paginator';
+import { DialogModule } from 'primeng/dialog';
+import { ItemComponent } from '../item/item.component';
 
 @Component({
   selector: 'app-homepage',
@@ -24,6 +26,8 @@ import { PaginatorModule } from 'primeng/paginator';
     ScrollTopModule,
     FormsModule,
     PaginatorModule,
+    DialogModule,
+    ItemComponent,
   ],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
@@ -40,6 +44,8 @@ export class HomepageComponent {
   category: string = '';
   first: number = 0;
   rows: number = 10;
+  itemDialogVisible: boolean = false;
+  selectedItem: any = null;
 
   constructor(private itemService: ItemService) {}
 
@@ -101,6 +107,11 @@ export class HomepageComponent {
     });
     this.first = event.first;
     this.rows = event.rows;
+  }
+
+  showItemDialog(item: any) {
+    this.itemDialogVisible = true
+    this.selectedItem = item;
   }
 
   searchProducts() {

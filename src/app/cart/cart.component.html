@@ -1,0 +1,97 @@
+<p-sidebar [(visible)]="visible" position="right" [style]="{ width: '50rem'}">
+    <ng-template pTemplate="header">
+        <span class="font-semibold text-xl">Sepet</span>
+    </ng-template>
+    <div *ngIf="productCount === 0">
+        Sepetinizde ürün bulunmuyor.
+    </div>
+    <div *ngIf="productCount !== 0">
+        <div style="display: flex; justify-content: flex-end;">
+            <button outlined="true" (click)="confirmDeleteAll($event)" pButton class="mt-1 mb-5"><i class="pi pi-trash mr-3"></i> Sepeti Boşalt</button>
+        </div>
+        
+        <p-table  [value]="products" [tableStyle]="{ 'min-width': '20rem' }">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Ürün Adı</th>
+                    <th>Adet</th>
+                    <th>Fiyat</th>
+                    <th>Kaldır</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td style="word-break: break-word" >{{ product.itemName }}</td>
+                    <td>
+                        <div class="flex flex-wrap gap-3 p-fluid" style="width: 60%;">
+                            <p-inputNumber
+                            [(ngModel)]="product.quantity"
+                            [showButtons]="true"
+                            buttonLayout="horizontal"
+                            inputId="horizontal"
+                            spinnerMode="horizontal"
+                            [step]="1"
+                            [min]="1"
+                            [max]="product.itemStock"
+                            mode="decimal" 
+                            (onInput)="onChangeQuantity($event,product.id,product.quantity,product.itemStock)"
+                            incrementButtonIcon="pi pi-plus"
+                            decrementButtonIcon="pi pi-minus" />
+                        </div>
+                    </td>
+                    <td>{{ product.itemPrice }}₺</td>
+                    <td> <button outlined="true" (click)="confirmDelete($event,product.id)" severity="danger" pButton icon="pi pi-trash"></button> </td>    
+                </tr>
+            </ng-template>
+        </p-table>
+    
+        <div class="grid">
+                <div class="col-12">
+                    <div class="flex flex-column gap-2">
+                        <form [formGroup]="promoForm" (ngSubmit)="applyPromo()">
+                        <input 
+                            pInputText
+                            id="promoCode"
+                            formControlName="promo"
+                            class="mt-5"
+                            placeholder="Promosyon Kodu"
+                            />
+                            <button 
+                            pButton 
+                            style="justify-content: center;"
+                            outlined="true" 
+                            class="mt-5 ml-1"
+                            >
+                                <i class="pi pi-check mr-3"></i> 
+                                Kullan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            
+            <div class="col-10">
+                <button 
+                pButton 
+                style="width: 100%; justify-content: center;" 
+                >
+                    <i class="pi pi-shopping-bag mr-3"></i> 
+                    Alışverişi Tamamla
+                </button>
+            </div>
+            <div class="col-2">
+                <button
+                pButton 
+                outlined="true"
+                style="width: 100%; justify-content: center;" 
+                >
+                    {{totalPrice}}
+                    <i class="pi pi-turkish-lira ml-1"></i> 
+                </button>
+            </div>
+    
+        </div>
+    </div>
+
+</p-sidebar>
+<p-toast />
+<p-confirmPopup />

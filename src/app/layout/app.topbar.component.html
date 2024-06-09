@@ -8,8 +8,12 @@
         <button routerLink="/signin" class="p-link layout-topbar-button">
             <i class="pi pi-user"></i>
         </button>
-        <button *ngIf="isLogged" class="p-link layout-topbar-button">
+        <button *ngIf="isLogged" pButton outlined="yes" (click)="cartSidebarVisible=true" class="p-link layout-topbar-button">
             <i class="pi pi-shopping-cart"></i>
         </button>
     </div>
 </div>
+<app-cart   
+[visible]="cartSidebarVisible"
+(visibleChange)="cartSidebarVisible = $event" 
+></app-cart>

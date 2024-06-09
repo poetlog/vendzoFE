@@ -20,6 +20,8 @@ import { AppLayoutComponent } from "./app.layout.component";
 import { CommonModule } from '@angular/common';
 import { ChipModule } from 'primeng/chip';
 import { TagModule } from 'primeng/tag';
+import { CartComponent } from '../cart/cart.component';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
     declarations: [
@@ -45,7 +47,9 @@ import { TagModule } from 'primeng/tag';
         RouterModule,
         AppConfigModule,
         ChipModule,
-        TagModule
+        TagModule,
+        CartComponent,
+        ButtonModule,
     ],
     exports: [AppLayoutComponent]
 })

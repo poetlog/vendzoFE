@@ -13,6 +13,8 @@ export class AppTopBarComponent implements OnInit{
     items!: MenuItem[];
     user : any;
     isLogged = this.authService.isAuthenticated();
+    cartSidebarVisible: boolean = false;
+
 
     @ViewChild('menubutton') menuButton!: ElementRef;
 
