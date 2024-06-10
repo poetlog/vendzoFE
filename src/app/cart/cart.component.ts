@@ -297,7 +297,7 @@ export class CartComponent {
       this.messageService.add({severity:'error', summary:'Hata', detail:'Adres bilgileri eksik!'});
       return;
     }
-    this.itemService.createOrder(this.selectedBillingAddress.address1, this.selectedShippingAddress.address1, this.totalPrice).subscribe(() => {
+    this.itemService.createOrder(this.selectedShippingAddress.address1, this.selectedBillingAddress.address1, this.totalPrice).subscribe(() => {
       this.messageService.add({severity:'success', summary:'Başarılı', detail:'Siparişiniz alındı!'});
       this.onDeleteAll();
       this.purchaseVisible = false;

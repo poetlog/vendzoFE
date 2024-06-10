@@ -108,7 +108,7 @@
         </ng-template>
             <p-steps [activeIndex]="activeIndex" [model]="stepItems" />
 
-            <div *ngIf="activeIndex == 0" class="mt-2">
+            <div *ngIf="activeIndex == 0 && addresses.length !== 0" class="mt-2">
                 <p-carousel 
                 [value]="addresses" 
                 [numVisible]="1" 
@@ -135,6 +135,9 @@
                                 </span>
                             </div>
                         </div>
+                    </ng-template>
+                    <ng-template pTemplate="footer">
+                        <span class="font-semibold text-sm">Adreslerinizi profilinizden düzenleyebilirsiniz.</span>
                     </ng-template>
                 </p-carousel>
                 <div class="flex align-items-center gap-3 mb-5">
@@ -178,6 +181,9 @@
                     <p-button label="İptal" size="large" severity="secondary" (click)="purchaseVisible = false" />
                     <p-button icon="pi pi-arrow-right" size="large" outlined="true" (click)="activeIndex = activeIndex + 1" />
                 </div>
+            </div>
+            <div *ngIf="activeIndex == 0 && addresses.length === 0" class="mt-2">
+                Devam etmek için lütfen profilinizden adres ekleyin.
             </div>
             <div *ngIf="activeIndex == 1" class="mt-5">
                 <h3 class="mb-3">Ödeme Bilgileri</h3>

@@ -110,4 +110,23 @@ export class UserService {
               itemDTO
             );
   }
+
+  getOrders(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/Order/Orders/userId=${localStorage.getItem('userId')}`);
+  }
+
+  getOrderDetails(orderId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/Order/OrderEntries/orderId=${orderId}`);
+  }
+
+  getOrdersOfSeller(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/Order/OrderEntries/userId=${localStorage.getItem('userId')}`);
+  }
+
+  setEntryStatus(entryId: string, status: string): Observable<any> {
+    return this.http.put<any>(
+              `${this.baseUrl}/Order/OrderEntries/updateStatus/id=${entryId}&status=${status}`, 
+              {}
+            );
+  }
 }

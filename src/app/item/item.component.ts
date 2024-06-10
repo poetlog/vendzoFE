@@ -45,7 +45,7 @@ export class ItemComponent {
   @Input()
   set item(value: any) {
     this._item = value;
-    this.itemService.getSellerOfItem(this._item.id).subscribe((data) => {
+    this.itemService.getSellerOfItem(value.id).subscribe((data) => {
       this.seller = data.username;
     });
     this.isLoggedIn = this.authService.isAuthenticated();

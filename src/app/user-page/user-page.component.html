@@ -390,6 +390,110 @@
 
                 </ng-template>
             </p-tabPanel>
+            <p-tabPanel header="Satışlarım" *ngIf="user['isClient'] === true">
+                <ng-template pTemplate="content">
+                    <div *ngIf="orders.length === 0" >Henüz satışınız yok.</div>
+                    <div *ngIf="orders.length !== 0" class="card">
+                        <p-table 
+                                [value]="orders" 
+                                [tableStyle]="{ 'min-width': '50rem' }"
+                                [scrollable]="true"
+                                scrollHeight="30rem"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Satış Tarihi</th>
+                                            <th>Ürün</th>
+                                            <th>Ürün Adı</th>
+                                            <th>Fiyat</th>
+                                            <th>Adet</th>
+                                            <th>Kargo Kodu</th>
+                                            <th>Durum</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-product>
+                                        <tr>
+                                            <td>{{ formatDate(product.createdAt) }}</td>
+                                            <td><img src="{{ product.photo }}" style="width: 5rem;" ></td>
+                                            <td>{{ product.itemTitle }}</td>
+                                            <td>{{ product.price }}₺</td>
+                                            <td>{{ product.quantity }}</td>
+                                            <td>{{ product.trackingNo }}</td>
+                                            <td>
+                                                <button pButton outlined="true" severity="warning" *ngIf="product.status == 'Yeni Siparis'">{{product.status}}</button>
+                                                <button pButton outlined="true" severity="success" *ngIf="product.status == 'Onaylandi'">{{product.status}}</button>
+                                                <button pButton outlined="true" severity="info" *ngIf="product.status == 'Gönderildi'">{{product.status}}</button>
+                                                <button pButton outlined="true" severity="primary" *ngIf="product.status == 'Teslim Edildi'">{{product.status}}</button>
+                                            </td>
+                                            <td>
+                                                <button pButton (click)="setEntryStatus(product.id,'Onaylandi')" size="small" severity="success" *ngIf="product.status == 'Yeni Siparis'">Onayla</button>
+                                                <button pButton (click)="setEntryStatus(product.id,'Gönderildi')" size="small" severity="info" *ngIf="product.status == 'Onaylandi'">"Gönderildi" olarak işaretle.</button>
+                                                <button pButton (click)="setEntryStatus(product.id,'Teslim Edildi')" size="small" severity="primary" *ngIf="product.status == 'Gönderildi'">"Teslim Edildi" olarak işaretle.</button>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                    </div>
+
+                </ng-template>
+            </p-tabPanel>
+            <p-tabPanel header="Siparişlerim" *ngIf="user['isClient'] === false">
+                <ng-template pTemplate="content">
+                    <div *ngIf="orders.length === 0" >Henüz siparişiniz yok.</div>
+
+                    <div *ngIf="orders.length !== 0" class="card">
+                        <p-accordion>
+                            <p-accordionTab 
+                                [header]="formatDate(tab.orderDate)+' tarihli sipariş'" 
+                                *ngFor="let tab of orders"
+                                (selectedChange)="getOrderEntries(tab.id)">
+                                <div class="m-0">
+                                    <div><b>Teslimat Adresi:</b> {{tab.shipAddress}}</div>
+                                    <div><b>Fatura Adresi: </b>{{tab.billAddress}}</div>
+                                    <div><b>Toplam Fiyat: </b>{{tab.total}} ₺</div>
+                                    <div><b>Ürünler:</b> </div>
+                                </div>
+                                <p-table 
+                                [value]="currentOrderEntries" 
+                                [tableStyle]="{ 'min-width': '50rem' }"
+                                [scrollable]="true"
+                                scrollHeight="30rem"
+                                >
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Ürün</th>
+                                            <th>Ürün Adı</th>
+                                            <th>Fiyat</th>
+                                            <th>Adet</th>
+                                            <th>Satıcı</th>
+                                            <th>Takip Numarası</th>
+                                            <th>Durum</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-product>
+                                        <tr>
+                                            <td><img src="{{ product.photo }}" style="width: 5rem;" ></td>
+                                            <td>{{ product.itemTitle }}</td>
+                                            <td>{{ product.price }}₺</td>
+                                            <td>{{ product.quantity }}</td>
+                                            <td>{{ product.sellerName }}</td>
+                                            <td>{{ product.trackingNo }}</td>
+                                            <td>
+                                                <button pButton outlined="true" severity="warning" *ngIf="product.status == 'Yeni Siparis'">{{product.status}}</button>
+                                                <button pButton outlined="true" severity="success" *ngIf="product.status == 'Onaylandi'">{{product.status}}</button>
+                                                <button pButton outlined="true" severity="info" *ngIf="product.status == 'Gönderildi'">{{product.status}}</button>
+                                                <button pButton outlined="true" severity="primary" *ngIf="product.status == 'Teslim Edildi'">{{product.status}}</button>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </p-accordionTab>
+                        </p-accordion>
+                    </div>
+
+                </ng-template>
+            </p-tabPanel>
         </p-tabView>
             <p-toast />
             <p-confirmPopup />

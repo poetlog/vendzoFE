@@ -26,7 +26,8 @@ import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { DataViewModule } from 'primeng/dataview';
-
+import { AccordionModule } from 'primeng/accordion';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-user-page',
@@ -54,6 +55,8 @@ import { DataViewModule } from 'primeng/dataview';
     MenuModule,
     ScrollPanelModule,
     DataViewModule,
+    AccordionModule,
+    TableModule,
   ],
   templateUrl: './user-page.component.html',
   styleUrl: './user-page.component.css',
@@ -77,7 +80,10 @@ export class UserPageComponent implements OnInit {
   itemToEdit:string = '';
   addresses = [];
   items = [];
+  orders: any[] = []
+  currentOrderEntries: any[] = [];
 
+  
   constructor(private fb: FormBuilder,
     private authService: AuthService, 
     private userService: UserService,
@@ -119,6 +125,13 @@ export class UserPageComponent implements OnInit {
             this.userService.getItems().subscribe(data => {
               this.items = data;
             });
+            this.userService.getOrdersOfSeller().subscribe(data => {
+              this.orders = data;
+            });
+          } else {
+            this.userService.getOrders().subscribe(data => {
+              this.orders = data;
+            });
           }
           return this.userService.getAddresses();
         })
@@ -127,6 +140,7 @@ export class UserPageComponent implements OnInit {
           a.id === this.user.currentAddress ? -1 : b.id === this.user.currentAddress ? 1 : 0
         );
       });
+      
     }
 
   refreshAddresses(): void {
@@ -415,70 +429,97 @@ export class UserPageComponent implements OnInit {
             //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
         }
     });
-}
-confirm2(event: Event) {
-  this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Şifrenizi değiştirmek istediğize emin misiniz?',
-      icon: 'pi pi-lock',
-      acceptLabel: 'Evet',
-      rejectLabel: 'Hayır',
-      accept: () => {
-          this.onReset();
-      },
-      reject: () => {
-          //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-      }
-  });
-}
-confirm3(event: Event, id: string) {
-  this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Bu adresi varsayılan olarak ayarlamak istediğinize emin misiniz?',
-      icon: 'pi pi-pen-to-square',
-      acceptLabel: 'Evet',
-      rejectLabel: 'Hayır',
-      accept: () => {
-        this.onSetDefaultAddress(id);
-      },
-      reject: () => {
-          //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-      }
-  });
-}
-confirm4(event: Event, id: string) {
-  this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Bu adresi silmek istediğinize emin misiniz?',
-      acceptButtonStyleClass: 'p-button-danger p-button-sm',
-      rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-sm',
-      icon: 'pi pi-trash',
-      acceptLabel: 'Evet',
-      rejectLabel: 'Hayır',
-      accept: () => {
-        this.onDeleteAddress(id);
-      },
-      reject: () => {
-          //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-      }
-  });
-}
-confirm5(event: Event, id: string) {
-  this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Bu ürünü silmek istediğinize emin misiniz?',
-      acceptButtonStyleClass: 'p-button-danger p-button-sm',
-      rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-sm',
-      icon: 'pi pi-trash',
-      acceptLabel: 'Evet',
-      rejectLabel: 'Hayır',
-      accept: () => {
-        this.onDeleteItem(id);
-      },
-      reject: () => {
-          //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-      }
-  });
-}
+  }
+  confirm2(event: Event) {
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Şifrenizi değiştirmek istediğize emin misiniz?',
+        icon: 'pi pi-lock',
+        acceptLabel: 'Evet',
+        rejectLabel: 'Hayır',
+        accept: () => {
+            this.onReset();
+        },
+        reject: () => {
+            //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
+  }
+  confirm3(event: Event, id: string) {
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Bu adresi varsayılan olarak ayarlamak istediğinize emin misiniz?',
+        icon: 'pi pi-pen-to-square',
+        acceptLabel: 'Evet',
+        rejectLabel: 'Hayır',
+        accept: () => {
+          this.onSetDefaultAddress(id);
+        },
+        reject: () => {
+            //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
+  }
+  confirm4(event: Event, id: string) {
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Bu adresi silmek istediğinize emin misiniz?',
+        acceptButtonStyleClass: 'p-button-danger p-button-sm',
+        rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-sm',
+        icon: 'pi pi-trash',
+        acceptLabel: 'Evet',
+        rejectLabel: 'Hayır',
+        accept: () => {
+          this.onDeleteAddress(id);
+        },
+        reject: () => {
+            //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
+  }
+  confirm5(event: Event, id: string) {
+    this.confirmationService.confirm({
+        target: event.target as EventTarget,
+        message: 'Bu ürünü silmek istediğinize emin misiniz?',
+        acceptButtonStyleClass: 'p-button-danger p-button-sm',
+        rejectButtonStyleClass: 'p-button-danger p-button-outlined p-button-sm',
+        icon: 'pi pi-trash',
+        acceptLabel: 'Evet',
+        rejectLabel: 'Hayır',
+        accept: () => {
+          this.onDeleteItem(id);
+        },
+        reject: () => {
+            //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
+        }
+    });
+  }
+  formatDate(date: string) {
+    let orderDate = new Date(date);
+    let minutes = orderDate.getMinutes().toString().padStart(2, '0');
+    return `${orderDate.getDate()}/${orderDate.getMonth() + 1}/${orderDate.getFullYear()} ${orderDate.getHours()}:`+minutes;
+  }
+
+  getOrderEntries( orderId:string): any{
+    this.userService.getOrderDetails(orderId).subscribe((data)=>{
+      this.currentOrderEntries = data;
+    })
+  }
+
+  setEntryStatus(entryId: string, status: string): void {
+    this.userService.setEntryStatus(entryId, status).pipe(
+      tap({
+        next: data => {
+          this.messageService.add({ severity: 'success', summary: 'Başarılı', detail: 'Durum Güncellendi', life: 3000 });
+          this.userService.getOrdersOfSeller().subscribe(data => {
+            this.orders = data;
+          });
+        },
+        error: error => {
+          this.messageService.add({ severity: 'error', summary: 'Hata', detail: 'Bilgilerinizi kontrol ediniz.', life: 3000 });
+        }
+      })
+    ).subscribe();
+  }
 
 }

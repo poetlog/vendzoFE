@@ -99,7 +99,6 @@ export class ItemService {
   createOrder(shipAddress:string, billAddress:string, totalPrice: number): Observable<any> {
     let order = {
       userId: localStorage.getItem('userId'),
-      status: 'Yeni Sipariş',
       shipAddress: shipAddress,
       billAddress: billAddress,
       total: totalPrice.toFixed(2)
