@@ -115,15 +115,17 @@ export class UserPageComponent implements OnInit {
       this.userService.getProfile().pipe(
         concatMap(user => {
           this.user = user;
+          if(user.isClient){
+            this.userService.getItems().subscribe(data => {
+              this.items = data;
+            });
+          }
           return this.userService.getAddresses();
         })
       ).subscribe(data => {
         this.addresses = data.sort((a:any, b:any) => 
           a.id === this.user.currentAddress ? -1 : b.id === this.user.currentAddress ? 1 : 0
         );
-      });
-      this.userService.getItems().subscribe(data => {
-        this.items = data;
       });
     }
 

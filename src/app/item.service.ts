@@ -96,4 +96,15 @@ export class ItemService {
     return this.http.get(`${this.baseUrl}/Promotion/check/code=${code}`);
   }
 
+  createOrder(shipAddress:string, billAddress:string, totalPrice: number): Observable<any> {
+    let order = {
+      userId: localStorage.getItem('userId'),
+      status: 'Yeni Sipariş',
+      shipAddress: shipAddress,
+      billAddress: billAddress,
+      total: totalPrice.toFixed(2)
+    };
+    return this.http.post(`${this.baseUrl}/Order/Orders/create`, order);
+  }
+
 }

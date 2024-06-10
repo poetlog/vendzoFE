@@ -10,7 +10,7 @@
             <button outlined="true" (click)="confirmDeleteAll($event)" pButton class="mt-1 mb-5"><i class="pi pi-trash mr-3"></i> Sepeti Boşalt</button>
         </div>
         
-        <p-table  [value]="products" [tableStyle]="{ 'min-width': '20rem' }">
+        <p-table [scrollable]="true" scrollHeight="30rem" [value]="products" [tableStyle]="{ 'min-width': '20rem' }">
             <ng-template pTemplate="header">
                 <tr>
                     <th>Ürün Adı</th>
@@ -54,17 +54,18 @@
                             id="promoCode"
                             formControlName="promo"
                             class="mt-5"
-                            placeholder="Promosyon Kodu"
+                            placeholder="Kupon Kodu"
                             />
                             <button 
                             pButton 
                             style="justify-content: center;"
                             outlined="true" 
-                            class="mt-5 ml-1"
+                            class="mt-5 ml-1 mr-3"
                             >
-                                <i class="pi pi-check mr-3"></i> 
-                                Kullan
+                                <i class="{{promoButton.icon}} mr-3"></i> 
+                                {{promoButton.label}} 
                             </button>
+                            {{discountText}}
                         </form>
                     </div>
                 </div>
@@ -73,6 +74,7 @@
                 <button 
                 pButton 
                 style="width: 100%; justify-content: center;" 
+                (click)="openPurchase()"
                 >
                     <i class="pi pi-shopping-bag mr-3"></i> 
                     Alışverişi Tamamla
@@ -80,11 +82,12 @@
             </div>
             <div class="col-2">
                 <button
-                pButton 
-                outlined="true"
+                pButton
+                severity="success"
+                rounded="true"
                 style="width: 100%; justify-content: center;" 
                 >
-                    {{totalPrice}}
+                    {{totalPrice.toFixed(2)}}
                     <i class="pi pi-turkish-lira ml-1"></i> 
                 </button>
             </div>
@@ -93,5 +96,138 @@
     </div>
 
 </p-sidebar>
+
+<p-sidebar
+        [modal]="false"
+        [(visible)]="purchaseVisible" 
+        [position]="'left'"
+        [style]="{ width: '50rem' }">
+
+        <ng-template pTemplate="header">
+            <span class="font-semibold text-xl">Siparişi Tamamla</span>
+        </ng-template>
+            <p-steps [activeIndex]="activeIndex" [model]="stepItems" />
+
+            <div *ngIf="activeIndex == 0" class="mt-2">
+                <p-carousel 
+                [value]="addresses" 
+                [numVisible]="1" 
+                [numScroll]="1" 
+                [circular]="false" 
+                >
+                <ng-template pTemplate="header">
+                    <h3 class="mt-5">Teslimat Adresi</h3>
+                </ng-template>
+                    <ng-template let-address pTemplate="item">
+                        <div class="border-1 surface-border border-round m-2 p-3">
+                            <div class="mb-3 font-semibold">
+                                {{ address.title }}
+                            </div>
+                            <div>
+                                {{ address.address1 }}
+                            </div>
+                            <div class="mb-1 font-medium">
+                                İletişim: {{ address.contactNo }}
+                            </div>
+                            <div class="flex justify-content-between align-items-center">
+                                <span>
+                                    <p-button icon="pi pi-check" (onClick)="selectShippingAddress(address)" severity="secondary" [outlined]="selectedShippingAddress !== address" />
+                                </span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-carousel>
+                <div class="flex align-items-center gap-3 mb-5">
+                    <p-checkbox
+                        [(ngModel)]="matchAddresses"
+                        [binary]="true"
+                        inputId="isDefault" />
+                    <label for="isDefault">Teslimat adresimi fatura adresi olarak kullan.</label>
+                </div>
+                <p-carousel
+                *ngIf="!matchAddresses"
+                [value]="addresses" 
+                [numVisible]="1" 
+                [numScroll]="1" 
+                [circular]="false"
+                >
+                <ng-template pTemplate="header">
+                    <h3 class="mt-2">Fatura Adresi</h3>
+                </ng-template>
+                    <ng-template let-address pTemplate="item">
+                        <div class="border-1 surface-border border-round m-2 p-3">
+                            <div class="mb-3 font-semibold">
+                                {{ address.title }}
+                            </div>
+                            <div>
+                                {{ address.address1 }}
+                            </div>
+                            <div class="mb-1 font-medium">
+                                İletişim: {{ address.contactNo }}
+                            </div>
+                            <div class="flex justify-content-between align-items-center">
+                                <span>
+                                    <p-button icon="pi pi-check" (onClick)="selectedBillingAddress=address" severity="secondary" [outlined]="selectedBillingAddress !== address" />
+                                </span>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-carousel>
+
+                <div class="flex justify-content-end gap-2">
+                    <p-button label="İptal" size="large" severity="secondary" (click)="purchaseVisible = false" />
+                    <p-button icon="pi pi-arrow-right" size="large" outlined="true" (click)="activeIndex = activeIndex + 1" />
+                </div>
+            </div>
+            <div *ngIf="activeIndex == 1" class="mt-5">
+                <h3 class="mb-3">Ödeme Bilgileri</h3>
+                <form [formGroup]="paymentForm">
+                    <label for="holder" class="mr-2">Kart Sahibi</label>
+                    <input id="holder" type="text" pInputText formControlName="holder" /> 
+                    <br><br>
+                    <label for="cardNumber" class="mr-2">Kart Numarası</label>
+                    <p-inputNumber inputId="cardNumber" [useGrouping]="false" showClear="true" allowEmpty="true" maxlength="16" formControlName="cardNo" />
+                    <br><br>
+                    <label for="cvc" class="mr-2">Güvenlik Kodu (CVC)</label>
+                    <p-inputNumber inputId="cvc" [useGrouping]="false" allowEmpty="true" minlength="3" maxlength="4" formControlName="cvc" />
+                    <br><br>
+                    <label for="expirationDate" class="mr-2">Son Kullanma Tarihi</label>
+                    <p-calendar 
+                    formControlName="expiration"
+                    id="expirationDate"
+                    view="month" 
+                    [minDate]="currentDate"
+                    dateFormat="mm/yy" 
+                    [readonlyInput]="true" />
+                </form>
+
+
+                <div class="flex justify-content-end gap-2">
+                    <p-button icon="pi pi-arrow-left" size="large" outlined="true" severity="secondary" (click)="activeIndex = activeIndex - 1" />
+                    <p-button icon="pi pi-arrow-right" size="large" outlined="true" (click)="confirmPayment()" />
+                </div>
+            </div>
+            <div *ngIf="activeIndex == 2" class="mt-2">
+                <h3>Detaylar</h3>
+                <div class="card">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>Teslimat Adresi:</b> {{selectedShippingAddress.address1}}</li>
+                        <li class="list-group-item"><b>Teslimat İletişim:</b> {{selectedShippingAddress.contactNo}}</li>
+                        <li class="list-group-item"><b>Fatura Adresi: </b>{{selectedBillingAddress.address1}}</li>
+                        <li class="list-group-item"><b>Ödeme Aracı:</b> Banka / Kredi Kartı ({{cardNo}})</li>
+                        <li class="list-group-item"><b>Toplam Fiyat: </b>{{totalPrice.toFixed(2)}}₺</li>
+                    </ul>
+                </div>
+
+
+                <div class="flex justify-content-end gap-2">
+                    <p-button icon="pi pi-arrow-left" outlined="true" size="large" severity="secondary" (click)="activeIndex = activeIndex - 1" />
+                    <p-button label="Sipariş Ver" size="large" (click)="confirmOrder()" />
+                </div>
+            </div>
+
+            
+    </p-sidebar>
+
 <p-toast />
 <p-confirmPopup />
