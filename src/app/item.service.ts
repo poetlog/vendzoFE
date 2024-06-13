@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ItemService {
 
-  private baseUrl = 'https://localhost:7042/api';
+  private baseUrl = 'https://vendzoapi-a5e9c7fua5c5bney.polandcentral-01.azurewebsites.net/api';
 
   constructor(private http: HttpClient) { }
 

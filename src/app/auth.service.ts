@@ -10,7 +10,7 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl = 'https://localhost:7042/api'; // TODO: change in prod
+  private baseUrl = 'https://vendzoapi-a5e9c7fua5c5bney.polandcentral-01.azurewebsites.net/api'; // TODO: change in prod
 
   constructor(private http: HttpClient, 
     private router: Router, 
